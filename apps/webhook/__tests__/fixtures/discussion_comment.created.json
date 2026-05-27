@@ -1,0 +1,30 @@
+{
+  "action": "created",
+  "comment": {
+    "html_url": "https://github.com/my-org/frontend/discussions/5#discussioncomment-1",
+    "body": "賛成です。まずは小さい範囲から始めましょう。",
+    "user": {
+      "login": "github-user-1",
+      "html_url": "https://github.com/github-user-1"
+    }
+  },
+  "discussion": {
+    "html_url": "https://github.com/my-org/frontend/discussions/5",
+    "number": 5,
+    "title": "新しいアーキテクチャの提案",
+    "body": "フロントエンドのアーキテクチャをリファクタリングする提案です。",
+    "state": "open",
+    "user": {
+      "login": "octocat",
+      "html_url": "https://github.com/octocat"
+    }
+  },
+  "repository": {
+    "full_name": "my-org/frontend",
+    "html_url": "https://github.com/my-org/frontend"
+  },
+  "sender": {
+    "login": "github-user-1",
+    "html_url": "https://github.com/github-user-1"
+  }
+}

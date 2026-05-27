@@ -26,20 +26,20 @@ describe("verifyWebhookSignature", () => {
 
   it("署名が不正な場合はエラーをスロー", () => {
     expect(() => verifyWebhookSignature(BODY, "sha256=invalidhash")).toThrow(
-      "Webhook 署名の検証に失敗しました",
+      "Webhook signature verification failed",
     );
   });
 
   it("署名が空文字の場合はエラーをスロー", () => {
     expect(() => verifyWebhookSignature(BODY, "")).toThrow(
-      "X-Hub-Signature-256 ヘッダーが存在しません",
+      "X-Hub-Signature-256 header is missing",
     );
   });
 
   it("シークレットが異なる場合はエラーをスロー", () => {
     const wrongSign = sign(BODY, "wrong-secret");
     expect(() => verifyWebhookSignature(BODY, wrongSign)).toThrow(
-      "Webhook 署名の検証に失敗しました",
+      "Webhook signature verification failed",
     );
   });
 
@@ -47,7 +47,7 @@ describe("verifyWebhookSignature", () => {
     // biome-ignore lint/performance/noDelete: process.env のクリーンアップには delete が必要
     delete process.env.GITHUB_WEBHOOK_SECRET;
     expect(() => verifyWebhookSignature(BODY, sign(BODY))).toThrow(
-      "GITHUB_WEBHOOK_SECRET が設定されていません",
+      "GITHUB_WEBHOOK_SECRET is not configured",
     );
   });
 });

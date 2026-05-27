@@ -56,8 +56,20 @@ describe("formatIssuesEvent", () => {
   });
 
   describe("未対応 action", () => {
-    it("null を返す", () => {
+    it("labeled は null を返す", () => {
       const payload = { ...issueOpenedPayload, action: "labeled" } as unknown as IssuesEvent;
+      const msg = formatIssuesEvent(payload, USERS_MAP);
+      expect(msg).toBeNull();
+    });
+
+    it("reopened は null を返す", () => {
+      const payload = { ...issueOpenedPayload, action: "reopened" } as unknown as IssuesEvent;
+      const msg = formatIssuesEvent(payload, USERS_MAP);
+      expect(msg).toBeNull();
+    });
+
+    it("assigned は null を返す", () => {
+      const payload = { ...issueOpenedPayload, action: "assigned" } as unknown as IssuesEvent;
       const msg = formatIssuesEvent(payload, USERS_MAP);
       expect(msg).toBeNull();
     });

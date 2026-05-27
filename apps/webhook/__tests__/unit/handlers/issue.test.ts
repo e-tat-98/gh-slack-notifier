@@ -56,8 +56,20 @@ describe("handleIssuesEvent", () => {
     );
   });
 
-  it("通知対象外のアクションでは Slack に投稿しない", async () => {
+  it("labeled アクションでは Slack に投稿しない", async () => {
     const payload = { ...issueOpenedPayload, action: "labeled" } as unknown as IssuesEvent;
+    await handleIssuesEvent(payload, CHANNEL);
+    expect(postSlackMessage).not.toHaveBeenCalled();
+  });
+
+  it("reopened アクションでは Slack に投稿しない（フォーマッター未対応）", async () => {
+    const payload = { ...issueOpenedPayload, action: "reopened" } as unknown as IssuesEvent;
+    await handleIssuesEvent(payload, CHANNEL);
+    expect(postSlackMessage).not.toHaveBeenCalled();
+  });
+
+  it("assigned アクションでは Slack に投稿しない（フォーマッター未対応）", async () => {
+    const payload = { ...issueOpenedPayload, action: "assigned" } as unknown as IssuesEvent;
     await handleIssuesEvent(payload, CHANNEL);
     expect(postSlackMessage).not.toHaveBeenCalled();
   });
