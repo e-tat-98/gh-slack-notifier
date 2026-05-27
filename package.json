@@ -1,0 +1,25 @@
+{
+  "name": "gh-slack-notifier-workspace",
+  "version": "0.0.1",
+  "private": true,
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=9"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @gh-slack-notifier/webhook dev",
+    "build": "pnpm --filter @gh-slack-notifier/webhook build",
+    "preview": "pnpm --filter @gh-slack-notifier/webhook preview",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "test": "pnpm --filter @gh-slack-notifier/webhook test",
+    "test:watch": "pnpm --filter @gh-slack-notifier/webhook test:watch"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@types/node": "^22.19.19"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["@biomejs/biome", "@parcel/watcher", "esbuild"]
+  }
+}

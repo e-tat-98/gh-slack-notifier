@@ -1,0 +1,31 @@
+{
+  "action": "submitted",
+  "review": {
+    "id": 1234567,
+    "user": {
+      "login": "github-user-1",
+      "html_url": "https://github.com/github-user-1"
+    },
+    "body": "LGTMです！",
+    "state": "approved",
+    "html_url": "https://github.com/my-org/frontend/pull/42#pullrequestreview-1234567",
+    "submitted_at": "2024-01-01T00:00:00Z"
+  },
+  "pull_request": {
+    "html_url": "https://github.com/my-org/frontend/pull/42",
+    "number": 42,
+    "title": "feat: ログイン機能を追加",
+    "user": {
+      "login": "octocat",
+      "html_url": "https://github.com/octocat"
+    }
+  },
+  "repository": {
+    "full_name": "my-org/frontend",
+    "html_url": "https://github.com/my-org/frontend"
+  },
+  "sender": {
+    "login": "github-user-1",
+    "html_url": "https://github.com/github-user-1"
+  }
+}

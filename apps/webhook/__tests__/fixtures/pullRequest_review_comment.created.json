@@ -1,0 +1,29 @@
+{
+  "action": "created",
+  "comment": {
+    "id": 9999,
+    "user": {
+      "login": "github-user-1",
+      "html_url": "https://github.com/github-user-1"
+    },
+    "body": "ここのロジックをもう少し整理できそうです。",
+    "html_url": "https://github.com/my-org/frontend/pull/42#discussion_r9999"
+  },
+  "pull_request": {
+    "html_url": "https://github.com/my-org/frontend/pull/42",
+    "number": 42,
+    "title": "feat: ログイン機能を追加",
+    "user": {
+      "login": "octocat",
+      "html_url": "https://github.com/octocat"
+    }
+  },
+  "repository": {
+    "full_name": "my-org/frontend",
+    "html_url": "https://github.com/my-org/frontend"
+  },
+  "sender": {
+    "login": "github-user-1",
+    "html_url": "https://github.com/github-user-1"
+  }
+}

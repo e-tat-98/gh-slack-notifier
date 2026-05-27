@@ -1,0 +1,23 @@
+{
+  "action": "closed",
+  "issue": {
+    "html_url": "https://github.com/my-org/frontend/issues/10",
+    "number": 10,
+    "title": "ログインページでエラーが発生する",
+    "body": "特定の条件下でログインボタンを押すとエラーが発生します。",
+    "state": "closed",
+    "user": {
+      "login": "octocat",
+      "html_url": "https://github.com/octocat"
+    },
+    "labels": [{ "name": "bug" }]
+  },
+  "repository": {
+    "full_name": "my-org/frontend",
+    "html_url": "https://github.com/my-org/frontend"
+  },
+  "sender": {
+    "login": "github-user-1",
+    "html_url": "https://github.com/github-user-1"
+  }
+}

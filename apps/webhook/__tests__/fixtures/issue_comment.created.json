@@ -1,0 +1,29 @@
+{
+  "action": "created",
+  "issue": {
+    "html_url": "https://github.com/my-org/frontend/issues/10",
+    "number": 10,
+    "title": "ログインページでエラーが発生する",
+    "user": {
+      "login": "octocat",
+      "html_url": "https://github.com/octocat"
+    }
+  },
+  "comment": {
+    "id": 8888,
+    "user": {
+      "login": "github-user-1",
+      "html_url": "https://github.com/github-user-1"
+    },
+    "body": "再現手順を教えてもらえますか？",
+    "html_url": "https://github.com/my-org/frontend/issues/10#issuecomment-8888"
+  },
+  "repository": {
+    "full_name": "my-org/frontend",
+    "html_url": "https://github.com/my-org/frontend"
+  },
+  "sender": {
+    "login": "github-user-1",
+    "html_url": "https://github.com/github-user-1"
+  }
+}

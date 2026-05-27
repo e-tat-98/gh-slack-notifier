@@ -1,0 +1,29 @@
+{
+  "action": "closed",
+  "number": 42,
+  "pull_request": {
+    "html_url": "https://github.com/my-org/frontend/pull/42",
+    "number": 42,
+    "title": "feat: ログイン機能を追加",
+    "body": "APIでのJWT認証とリフレッシュトークンの処理を実装しました。",
+    "state": "closed",
+    "merged": true,
+    "user": {
+      "login": "octocat",
+      "html_url": "https://github.com/octocat"
+    },
+    "merged_by": {
+      "login": "github-user-1",
+      "html_url": "https://github.com/github-user-1"
+    },
+    "requested_reviewers": []
+  },
+  "repository": {
+    "full_name": "my-org/frontend",
+    "html_url": "https://github.com/my-org/frontend"
+  },
+  "sender": {
+    "login": "github-user-1",
+    "html_url": "https://github.com/github-user-1"
+  }
+}

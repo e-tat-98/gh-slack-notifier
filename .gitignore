@@ -1,0 +1,18 @@
+node_modules/
+dist/
+*.env
+.env.*
+!apps/webhook/.env.example
+
+# Nitro
+.nitro/
+.output/
+apps/webhook/.output/
+apps/webhook/.nitro/
+
+# CDK
+apps/cdk/cdk.out/
+apps/cdk/node_modules/
+
+# OS
+.DS_Store

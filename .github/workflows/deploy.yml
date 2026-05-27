@@ -1,0 +1,44 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  id-token: write  # OIDC 認証に必要
+  contents: read
+
+jobs:
+  deploy:
+    name: AWS へデプロイ
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: pnpm のセットアップ
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Node.js のセットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
+      - name: 依存パッケージのインストール
+        run: pnpm install --frozen-lockfile
+
+      - name: Nitro ビルド
+        run: pnpm build
+
+      - name: AWS 認証 (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ap-northeast-1
+
+      - name: CDK デプロイ
+        working-directory: apps/cdk
+        run: pnpm deploy --require-approval never
