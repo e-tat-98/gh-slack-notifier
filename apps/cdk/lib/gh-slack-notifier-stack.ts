@@ -49,7 +49,7 @@ export class GhSlackNotifierStack extends cdk.Stack {
       runtime: lambda.Runtime.NODEJS_20_X,
       handler: "index.handler",
       // Nitro の aws-lambda プリセットのビルド成果物
-      code: lambda.Code.fromAsset(join(import.meta.dirname, "../../nitro/.output/server")),
+      code: lambda.Code.fromAsset(join(import.meta.dirname, "../../webhook/.output/server")),
       timeout: cdk.Duration.seconds(30),
       memorySize: 256,
       environment: {
