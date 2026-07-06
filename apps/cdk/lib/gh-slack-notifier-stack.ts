@@ -87,6 +87,12 @@ export class GhSlackNotifierStack extends cdk.Stack {
       integration: new integrations.HttpLambdaIntegration("WebhookIntegration", webhookFn),
     });
 
+    httpApi.addRoutes({
+      path: "/health",
+      methods: [apigwv2.HttpMethod.GET],
+      integration: new integrations.HttpLambdaIntegration("HealthIntegration", webhookFn),
+    });
+
     // -----------------------------------------------------------
     // Outputs
     // -----------------------------------------------------------
