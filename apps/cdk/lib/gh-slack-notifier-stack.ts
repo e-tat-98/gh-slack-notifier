@@ -3,7 +3,6 @@ import * as cdk from "aws-cdk-lib";
 import * as apigwv2 from "aws-cdk-lib/aws-apigatewayv2";
 import * as integrations from "aws-cdk-lib/aws-apigatewayv2-integrations";
 import * as lambda from "aws-cdk-lib/aws-lambda";
-import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import * as ssm from "aws-cdk-lib/aws-ssm";
 import type { Construct } from "constructs";
 
@@ -12,32 +11,38 @@ export class GhSlackNotifierStack extends cdk.Stack {
     super(scope, id, props);
 
     // -----------------------------------------------------------
-    // シークレット (Secrets Manager)
+    // SSM Parameter Store
+    // 機密値は SecureString (KMS暗号化)、非機密値は String で管理
     // デプロイ後に AWS Console または CLI で値を設定する
     // -----------------------------------------------------------
 
-    /** GitHub / Slack の各種シークレットをまとめて管理する */
-    const ghSlackSecrets = new secretsmanager.Secret(this, "GhSlackSecrets", {
-      secretName: "/gh-slack-notifier/secrets",
-      description: "GitHub App & Slack Bot Token for gh-slack-notifier",
-      generateSecretString: {
-        secretStringTemplate: JSON.stringify({
-          SLACK_BOT_TOKEN: "xoxb-placeholder",
-          GITHUB_WEBHOOK_SECRET: "placeholder",
-          GITHUB_APP_PRIVATE_KEY: "placeholder",
-        }),
-        generateStringKey: "_unused",
-      },
+    const slackBotTokenParam = new ssm.StringParameter(this, "SlackBotToken", {
+      parameterName: "/gh-slack-notifier/slack-bot-token",
+      stringValue: "placeholder",
+      description: "Slack Bot Token for gh-slack-notifier",
+      tier: ssm.ParameterTier.STANDARD,
+      // SecureString は CDK では直接作成できないため、デプロイ後に手動で上書きする
     });
 
-    // -----------------------------------------------------------
-    // SSM Parameter Store (非機密設定値)
-    // -----------------------------------------------------------
+    const githubWebhookSecretParam = new ssm.StringParameter(this, "GitHubWebhookSecret", {
+      parameterName: "/gh-slack-notifier/github-webhook-secret",
+      stringValue: "placeholder",
+      description: "GitHub Webhook Secret for gh-slack-notifier",
+      tier: ssm.ParameterTier.STANDARD,
+    });
+
+    const githubAppPrivateKeyParam = new ssm.StringParameter(this, "GitHubAppPrivateKey", {
+      parameterName: "/gh-slack-notifier/github-app-private-key",
+      stringValue: "placeholder",
+      description: "GitHub App Private Key for gh-slack-notifier",
+      tier: ssm.ParameterTier.STANDARD,
+    });
 
     const githubAppIdParam = new ssm.StringParameter(this, "GitHubAppId", {
       parameterName: "/gh-slack-notifier/github-app-id",
       stringValue: "placeholder",
       description: "GitHub App ID for gh-slack-notifier",
+      tier: ssm.ParameterTier.STANDARD,
     });
 
     // -----------------------------------------------------------
@@ -54,15 +59,17 @@ export class GhSlackNotifierStack extends cdk.Stack {
       memorySize: 256,
       environment: {
         NODE_ENV: "production",
-        // Secrets Manager の ARN を渡す（起動時に SDK で取得）
-        GH_SLACK_SECRETS_ARN: ghSlackSecrets.secretArn,
-        // SSM Parameter の名前を渡す
+        SLACK_BOT_TOKEN_PARAM: slackBotTokenParam.parameterName,
+        GITHUB_WEBHOOK_SECRET_PARAM: githubWebhookSecretParam.parameterName,
+        GITHUB_APP_PRIVATE_KEY_PARAM: githubAppPrivateKeyParam.parameterName,
         GITHUB_APP_ID_PARAM: githubAppIdParam.parameterName,
       },
     });
 
     // Lambda への権限付与
-    ghSlackSecrets.grantRead(webhookFn);
+    slackBotTokenParam.grantRead(webhookFn);
+    githubWebhookSecretParam.grantRead(webhookFn);
+    githubAppPrivateKeyParam.grantRead(webhookFn);
     githubAppIdParam.grantRead(webhookFn);
 
     // -----------------------------------------------------------
@@ -87,11 +94,6 @@ export class GhSlackNotifierStack extends cdk.Stack {
     new cdk.CfnOutput(this, "WebhookUrl", {
       value: `${httpApi.apiEndpoint}/webhook`,
       description: "GitHub Webhook に設定する URL",
-    });
-
-    new cdk.CfnOutput(this, "SecretArn", {
-      value: ghSlackSecrets.secretArn,
-      description: "シークレット ARN（AWS Console で値を設定してください）",
     });
   }
 }
