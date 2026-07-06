@@ -41,7 +41,7 @@ export function formatPullRequestEvent(
           type: "section",
           text: {
             type: "mrkdwn",
-            text: `*${prLink}*\nby ${author}  |  ${repoName}`,
+            text: `*${prLink}*\nby ${author}`,
           },
         },
         ...(pr.body
@@ -89,7 +89,7 @@ export function formatPullRequestEvent(
           type: "section",
           text: {
             type: "mrkdwn",
-            text: `*${prLink}*\nby ${author}${mergedBy}  |  ${repoName}`,
+            text: `*${prLink}*\nby ${author}${mergedBy}`,
           },
         },
         {
@@ -121,7 +121,7 @@ export function formatPullRequestEvent(
           type: "section",
           text: {
             type: "mrkdwn",
-            text: `👀 *レビューをお願いします*\n*${prLink}*\n\n${reviewer} さん、レビューをお願いします\nby ${author}  |  ${repoName}`,
+            text: `👀 *レビューをお願いします*\n*${prLink}*\n\n${reviewer} さん、レビューをお願いします\nby ${author}`,
           },
         },
         {
@@ -169,14 +169,14 @@ export function formatPullRequestReviewEvent(
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `✅ *Pull Request が Approve されました*\n*${prLink}*\n\n${author} さん、${reviewer} さんが承認しました  |  ${repoName}`,
+          text: `✅ *Pull Request が Approve されました*\n*${prLink}*\n\n${author} さん、${reviewer} さんが承認しました`,
         },
       },
       ...(review.body
         ? [
             {
               type: "context" as const,
-              elements: [{ type: "mrkdwn" as const, text: truncate(review.body, 100) }],
+              elements: [{ type: "mrkdwn" as const, text: `> ${truncate(review.body, 100)}` }],
             },
           ]
         : []),
@@ -220,12 +220,12 @@ export function formatPullRequestReviewCommentEvent(
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `💬 *レビューコメントが届きました*\n*${prLink}*\n\n${author} さん、${commenter} さんからコメントがあります  |  ${repoName}`,
+          text: `💬 *レビューコメントが届きました*\n*${prLink}*\n\n${author} さん、${commenter} さんからコメントがあります`,
         },
       },
       {
         type: "section",
-        text: { type: "mrkdwn", text: truncate(comment.body, 200) },
+        text: { type: "mrkdwn", text: `> ${truncate(comment.body, 200)}` },
       },
       {
         type: "actions",
