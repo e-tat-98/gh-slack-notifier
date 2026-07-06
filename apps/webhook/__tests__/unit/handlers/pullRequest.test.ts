@@ -64,6 +64,7 @@ describe("handlePullRequestEvent", () => {
       expect.objectContaining({
         text: expect.stringContaining("マージ"),
       }),
+      undefined,
     );
   });
 
@@ -84,13 +85,13 @@ describe("handlePullRequestReviewEvent", () => {
     expect(postSlackMessage).toHaveBeenCalledOnce();
   });
 
-  it("commented レビューでは Slack に投稿しない", async () => {
+  it("commented レビュー（body あり）で Slack に投稿する", async () => {
     const payload = {
       ...prReviewApprovedPayload,
       review: { ...prReviewApprovedPayload.review, state: "commented" },
     } as unknown as PullRequestReviewEvent;
     await handlePullRequestReviewEvent(payload, CHANNEL);
-    expect(postSlackMessage).not.toHaveBeenCalled();
+    expect(postSlackMessage).toHaveBeenCalledOnce();
   });
 });
 

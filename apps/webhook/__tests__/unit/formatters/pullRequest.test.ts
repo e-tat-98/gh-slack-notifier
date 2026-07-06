@@ -124,10 +124,20 @@ describe("formatPullRequestReviewEvent", () => {
     expect(sectionText).toContain("<@U9876543210>"); // reviewer
   });
 
-  it("approved 以外は null を返す", () => {
+  it("commented レビュー（body あり）でメッセージを生成する", () => {
     const payload = {
       ...prReviewApprovedPayload,
       review: { ...prReviewApprovedPayload.review, state: "commented" },
+    } as unknown as PullRequestReviewEvent;
+    const msg = formatPullRequestReviewEvent(payload, USERS_MAP);
+    expect(msg).not.toBeNull();
+    expect(msg?.text).toContain("レビューコメント");
+  });
+
+  it("dismissed など未対応の state は null を返す", () => {
+    const payload = {
+      ...prReviewApprovedPayload,
+      review: { ...prReviewApprovedPayload.review, state: "dismissed" },
     } as unknown as PullRequestReviewEvent;
     const msg = formatPullRequestReviewEvent(payload, USERS_MAP);
     expect(msg).toBeNull();
