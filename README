@@ -20,7 +20,7 @@ GitHub Webhook → Slack API の連携を行うバックエンドアプリケー
 ### Slack Apps のインストールと認証
 1. 「install Apps」を選択
 2. 「Install to Workspace」をクリックしてインストール
-3. 後でAWS Secret Managerへ登録するため「Bot User OAuth Token」を控えておく
+3. 後でSSM Parameterへ登録するため「Bot User OAuth Token」を控えておく
 
 
 

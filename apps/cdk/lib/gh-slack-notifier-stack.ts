@@ -16,14 +16,15 @@ export class GhSlackNotifierStack extends cdk.Stack {
     // デプロイ後に AWS Console または CLI で値を設定する
     // -----------------------------------------------------------
 
+    // SecureString は CDK では直接作成できないため、デプロイ後に手動で上書きする
     const slackBotTokenParam = new ssm.StringParameter(this, "SlackBotToken", {
       parameterName: "/gh-slack-notifier/slack-bot-token",
       stringValue: "placeholder",
       description: "Slack Bot Token for gh-slack-notifier",
       tier: ssm.ParameterTier.STANDARD,
-      // SecureString は CDK では直接作成できないため、デプロイ後に手動で上書きする
     });
 
+    // SecureString は CDK では直接作成できないため、デプロイ後に手動で上書きする
     const githubWebhookSecretParam = new ssm.StringParameter(this, "GitHubWebhookSecret", {
       parameterName: "/gh-slack-notifier/github-webhook-secret",
       stringValue: "placeholder",
@@ -31,6 +32,7 @@ export class GhSlackNotifierStack extends cdk.Stack {
       tier: ssm.ParameterTier.STANDARD,
     });
 
+    // SecureString は CDK では直接作成できないため、デプロイ後に手動で上書きする
     const githubAppPrivateKeyParam = new ssm.StringParameter(this, "GitHubAppPrivateKey", {
       parameterName: "/gh-slack-notifier/github-app-private-key",
       stringValue: "placeholder",
@@ -53,10 +55,11 @@ export class GhSlackNotifierStack extends cdk.Stack {
     const webhookFn = new lambda.Function(this, "WebhookHandler", {
       runtime: lambda.Runtime.NODEJS_20_X,
       handler: "index.handler",
-      // Nitro の aws-lambda プリセットのビルド成果物
       code: lambda.Code.fromAsset(join(import.meta.dirname, "../../webhook/.output/server")),
       timeout: cdk.Duration.seconds(30),
       memorySize: 256,
+      // APIコール防止策: スロットリングをすり抜けた場合の Lambda 爆発を防ぐ
+      reservedConcurrentExecutions: 5,
       environment: {
         NODE_ENV: "production",
         SLACK_BOT_TOKEN_PARAM: slackBotTokenParam.parameterName,
@@ -80,6 +83,13 @@ export class GhSlackNotifierStack extends cdk.Stack {
       apiName: "gh-slack-notifier",
       description: "GitHub Webhook → Slack Notifier",
     });
+
+    // APIコール防止策: 悪意あるリクエストによるコスト増大を防ぐためスロットリングを設定
+    const cfnStage = httpApi.defaultStage?.node.defaultChild as apigwv2.CfnStage;
+    cfnStage.defaultRouteSettings = {
+      throttlingBurstLimit: 10,
+      throttlingRateLimit: 5,
+    };
 
     httpApi.addRoutes({
       path: "/webhook",
