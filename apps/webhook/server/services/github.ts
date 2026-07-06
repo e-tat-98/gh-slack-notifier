@@ -26,17 +26,21 @@ export function extractThreadTs(body: string | null | undefined): string | null 
 }
 
 /**
- * PR・Issue 本文末尾に Slack スレッド ID を追記する
+ * PR・Issue 本文末尾に Slack スレッド ID を追記する。
+ * リポジトリ名から GitHub App のインストール情報を自動取得する。
  */
 export async function appendThreadTs(
-  installationId: number,
   owner: string,
   repo: string,
   issueNumber: number,
   currentBody: string | null | undefined,
   ts: string,
 ): Promise<void> {
-  const octokit = await getApp().getInstallationOctokit(installationId);
+  const { data: installation } = await getApp().octokit.rest.apps.getRepoInstallation({
+    owner,
+    repo,
+  });
+  const octokit = await getApp().getInstallationOctokit(installation.id);
   await octokit.rest.issues.update({
     owner,
     repo,

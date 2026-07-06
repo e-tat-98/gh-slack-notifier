@@ -19,7 +19,7 @@ export async function handlePullRequestEvent(
   payload: PullRequestEvent,
   slackChannel: string,
 ): Promise<void> {
-  const { action, pull_request: pr, repository, installation } = payload;
+  const { action, pull_request: pr, repository } = payload;
   const message = formatPullRequestEvent(payload, usersConfig);
   if (!message) {
     console.log(`pull_request[${action}]: Skipping non-target action.`);
@@ -28,17 +28,11 @@ export async function handlePullRequestEvent(
 
   if (action === "opened") {
     const ts = await postSlackMessage(slackChannel, message);
-    if (!installation?.id) {
-      console.warn("installation.id is missing in PR payload, skipping thread_ts append.");
-    } else {
-      const [owner, repo] = repository.full_name.split("/");
-      console.log(
-        `Appending thread_ts to PR #${pr.number}: owner=${owner}, repo=${repo}, ts=${ts}`,
-      );
-      await appendThreadTs(installation.id, owner, repo, pr.number, pr.body, ts).catch((e) =>
-        console.error("Failed to append thread_ts to PR body:", e),
-      );
-    }
+    const [owner, repo] = repository.full_name.split("/");
+    console.log(`Appending thread_ts to PR #${pr.number}: owner=${owner}, repo=${repo}, ts=${ts}`);
+    await appendThreadTs(owner, repo, pr.number, pr.body, ts).catch((e) =>
+      console.error("Failed to append thread_ts to PR body:", e),
+    );
   } else {
     const threadTs = extractThreadTs(pr.body) ?? undefined;
     console.log(`Extracted thread_ts from PR #${pr.number} body: ${threadTs ?? "not found"}`);
