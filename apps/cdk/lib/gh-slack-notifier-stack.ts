@@ -58,8 +58,6 @@ export class GhSlackNotifierStack extends cdk.Stack {
       code: lambda.Code.fromAsset(join(import.meta.dirname, "../../webhook/.output/server")),
       timeout: cdk.Duration.seconds(30),
       memorySize: 256,
-      // APIコール防止策: スロットリングをすり抜けた場合の Lambda 爆発を防ぐ
-      reservedConcurrentExecutions: 5,
       environment: {
         NODE_ENV: "production",
         SLACK_BOT_TOKEN_PARAM: slackBotTokenParam.parameterName,
