@@ -85,7 +85,6 @@ export class GhSlackNotifierStack extends cdk.Stack {
     });
 
     // APIコール防止策: 悪意あるリクエストによるコスト増大を防ぐためスロットリングを設定
-    // L2 construct には defaultRouteSettings がないため CfnStage のエスケープハッチで設定する
     const cfnStage = httpApi.defaultStage?.node.defaultChild as apigwv2.CfnStage;
     cfnStage.defaultRouteSettings = {
       throttlingBurstLimit: 10,
