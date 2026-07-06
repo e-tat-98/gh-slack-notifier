@@ -21,15 +21,26 @@ function getClient(): WebClient {
  *
  * @param channel Slack チャンネル ID (C...)
  * @param message 投稿するメッセージ
+ * @param threadTs スレッドに返信する場合は親メッセージの ts
+ * @returns 投稿したメッセージの ts
  */
-export async function postSlackMessage(channel: string, message: SlackMessage): Promise<void> {
+export async function postSlackMessage(
+  channel: string,
+  message: SlackMessage,
+  threadTs?: string,
+): Promise<string> {
   const slackClient = getClient();
   try {
-    await slackClient.chat.postMessage({
+    const result = await slackClient.chat.postMessage({
       channel,
       text: message.text,
       blocks: message.blocks,
+      thread_ts: threadTs,
+      unfurl_links: false,
+      unfurl_media: false,
     });
+    console.log(`Slack message posted successfully: channel=${channel}, ts=${result.ts}`);
+    return result.ts ?? "";
   } catch (error) {
     console.error("Failed to post message to Slack:", error);
     throw error;

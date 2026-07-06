@@ -2,6 +2,7 @@ import { join } from "node:path";
 import * as cdk from "aws-cdk-lib";
 import * as apigwv2 from "aws-cdk-lib/aws-apigatewayv2";
 import * as integrations from "aws-cdk-lib/aws-apigatewayv2-integrations";
+import * as kms from "aws-cdk-lib/aws-kms";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import * as ssm from "aws-cdk-lib/aws-ssm";
 import type { Construct } from "constructs";
@@ -72,6 +73,10 @@ export class GhSlackNotifierStack extends cdk.Stack {
     githubWebhookSecretParam.grantRead(webhookFn);
     githubAppPrivateKeyParam.grantRead(webhookFn);
     githubAppIdParam.grantRead(webhookFn);
+
+    // SecureString の復号に必要な KMS 権限を付与（SSM マネージドキー）
+    const ssmManagedKey = kms.Alias.fromAliasName(this, "SsmManagedKey", "alias/aws/ssm");
+    ssmManagedKey.grantDecrypt(webhookFn);
 
     // -----------------------------------------------------------
     // HTTP API (API Gateway v2)

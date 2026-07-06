@@ -41,7 +41,7 @@ export function formatPullRequestEvent(
           type: "section",
           text: {
             type: "mrkdwn",
-            text: `*${prLink}*\nby ${author}  |  ${repoName}`,
+            text: `*${prLink}*\nby ${author}`,
           },
         },
         ...(pr.body
@@ -89,7 +89,7 @@ export function formatPullRequestEvent(
           type: "section",
           text: {
             type: "mrkdwn",
-            text: `*${prLink}*\nby ${author}${mergedBy}  |  ${repoName}`,
+            text: `*${prLink}*\nby ${author}${mergedBy}`,
           },
         },
         {
@@ -121,7 +121,37 @@ export function formatPullRequestEvent(
           type: "section",
           text: {
             type: "mrkdwn",
-            text: `👀 *レビューをお願いします*\n*${prLink}*\n\n${reviewer} さん、レビューをお願いします\nby ${author}  |  ${repoName}`,
+            text: `👀 *レビューをお願いします*\n*${prLink}*\n\n${reviewer} さん、レビューをお願いします\nby ${author}`,
+          },
+        },
+        {
+          type: "actions",
+          elements: [
+            {
+              type: "button",
+              text: { type: "plain_text", text: "PR を確認する", emoji: true },
+              url: pr.html_url,
+              action_id: "view_pr",
+            },
+          ],
+        },
+      ],
+    };
+  }
+
+  if (action === "reopened") {
+    return {
+      text: `[${repoName}] PR #${pr.number} が再オープンされました: ${pr.title}`,
+      blocks: [
+        {
+          type: "header",
+          text: { type: "plain_text", text: "🔁 Pull Request が再オープンされました", emoji: true },
+        },
+        {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: `*${prLink}*\nby ${author}`,
           },
         },
         {
@@ -154,7 +184,7 @@ export function formatPullRequestReviewEvent(
   const { action, review, pull_request: pr, repository } = payload;
   const repoName = repository.full_name;
 
-  if (action !== "submitted" || review.state !== "approved") {
+  if (action !== "submitted") {
     return null;
   }
 
@@ -162,37 +192,105 @@ export function formatPullRequestReviewEvent(
   const reviewer = toMention(review.user.login, usersMap);
   const author = toMention(pr.user.login, usersMap);
 
-  return {
-    text: `[${repoName}] PR #${pr.number} が Approve されました: ${pr.title}`,
-    blocks: [
-      {
-        type: "section",
-        text: {
-          type: "mrkdwn",
-          text: `✅ *Pull Request が Approve されました*\n*${prLink}*\n\n${author} さん、${reviewer} さんが承認しました  |  ${repoName}`,
-        },
-      },
-      ...(review.body
-        ? [
-            {
-              type: "context" as const,
-              elements: [{ type: "mrkdwn" as const, text: truncate(review.body, 100) }],
-            },
-          ]
-        : []),
-      {
-        type: "actions",
-        elements: [
-          {
-            type: "button",
-            text: { type: "plain_text", text: "PR を確認する", emoji: true },
-            url: pr.html_url,
-            action_id: "view_pr",
+  if (review.state === "approved") {
+    return {
+      text: `[${repoName}] PR #${pr.number} が Approve されました: ${pr.title}`,
+      blocks: [
+        {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: `✅ *Pull Request が Approve されました*\n*${prLink}*\n\n${author} さん、${reviewer} さんが承認しました`,
           },
-        ],
-      },
-    ],
-  };
+        },
+        ...(review.body
+          ? [
+              {
+                type: "context" as const,
+                elements: [{ type: "mrkdwn" as const, text: `> ${truncate(review.body, 100)}` }],
+              },
+            ]
+          : []),
+        {
+          type: "actions",
+          elements: [
+            {
+              type: "button",
+              text: { type: "plain_text", text: "PR を確認する", emoji: true },
+              url: pr.html_url,
+              action_id: "view_pr",
+            },
+          ],
+        },
+      ],
+    };
+  }
+
+  if (review.state === "changes_requested") {
+    return {
+      text: `[${repoName}] PR #${pr.number} に変更が要求されました: ${pr.title}`,
+      blocks: [
+        {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: `🔄 *変更が要求されました*\n*${prLink}*\n\n${author} さん、${reviewer} さんから変更リクエストがあります`,
+          },
+        },
+        ...(review.body
+          ? [
+              {
+                type: "context" as const,
+                elements: [{ type: "mrkdwn" as const, text: `> ${truncate(review.body, 100)}` }],
+              },
+            ]
+          : []),
+        {
+          type: "actions",
+          elements: [
+            {
+              type: "button",
+              text: { type: "plain_text", text: "PR を確認する", emoji: true },
+              url: pr.html_url,
+              action_id: "view_pr",
+            },
+          ],
+        },
+      ],
+    };
+  }
+
+  if (review.state === "commented" && review.body) {
+    return {
+      text: `[${repoName}] PR #${pr.number} にレビューコメントが届きました: ${pr.title}`,
+      blocks: [
+        {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: `💬 *レビューコメントが届きました*\n*${prLink}*\n\n${author} さん、${reviewer} さんからコメントがあります`,
+          },
+        },
+        {
+          type: "context",
+          elements: [{ type: "mrkdwn" as const, text: `> ${truncate(review.body, 100)}` }],
+        },
+        {
+          type: "actions",
+          elements: [
+            {
+              type: "button",
+              text: { type: "plain_text", text: "PR を確認する", emoji: true },
+              url: pr.html_url,
+              action_id: "view_pr",
+            },
+          ],
+        },
+      ],
+    };
+  }
+
+  return null;
 }
 
 /**

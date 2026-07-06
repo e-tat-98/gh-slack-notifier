@@ -33,6 +33,8 @@ export default defineEventHandler(async (event) => {
   const signatureHeader = getHeader(event, "x-hub-signature-256") ?? "";
   const githubEvent = getHeader(event, "x-github-event") ?? "";
 
+  console.log(`Received event: repo=${repoKey}, event=${githubEvent}`);
+
   // Webhook 署名を検証
   try {
     verifyWebhookSignature(rawBody, signatureHeader);
@@ -40,6 +42,8 @@ export default defineEventHandler(async (event) => {
     console.error("Signature verification failed:", error);
     throw createError({ statusCode: 401, message: "Webhook signature verification failed" });
   }
+
+  console.log("Signature verification passed.");
 
   // リポジトリ設定を確認（未登録リポジトリは 200 で無視）
   const repoConfig = reposConfig[repoKey];
@@ -67,6 +71,8 @@ export default defineEventHandler(async (event) => {
   }
 
   const { slackChannel } = repoConfig;
+
+  console.log(`Dispatching event: ${githubEvent}[${action ?? "N/A"}] to channel=${slackChannel}`);
 
   try {
     switch (githubEvent) {

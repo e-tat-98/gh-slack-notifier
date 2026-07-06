@@ -7,7 +7,14 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // Slack サービスをモック
 vi.mock("../../../server/services/slack", () => ({
-  postSlackMessage: vi.fn().mockResolvedValue(undefined),
+  postSlackMessage: vi.fn().mockResolvedValue("1234567890.123456"),
+}));
+
+// GitHub サービスをモック
+vi.mock("../../../server/services/github", () => ({
+  extractThreadTs: vi.fn().mockReturnValue(null),
+  appendThreadTs: vi.fn().mockResolvedValue(undefined),
+  verifyWebhookSignature: vi.fn(),
 }));
 
 // config/users をモック
@@ -64,6 +71,7 @@ describe("handlePullRequestEvent", () => {
       expect.objectContaining({
         text: expect.stringContaining("マージ"),
       }),
+      undefined,
     );
   });
 
@@ -84,13 +92,13 @@ describe("handlePullRequestReviewEvent", () => {
     expect(postSlackMessage).toHaveBeenCalledOnce();
   });
 
-  it("commented レビューでは Slack に投稿しない", async () => {
+  it("commented レビュー（body あり）で Slack に投稿する", async () => {
     const payload = {
       ...prReviewApprovedPayload,
       review: { ...prReviewApprovedPayload.review, state: "commented" },
     } as unknown as PullRequestReviewEvent;
     await handlePullRequestReviewEvent(payload, CHANNEL);
-    expect(postSlackMessage).not.toHaveBeenCalled();
+    expect(postSlackMessage).toHaveBeenCalledOnce();
   });
 });
 
