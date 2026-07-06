@@ -42,7 +42,7 @@ export function formatIssuesEvent(
           type: "section",
           text: {
             type: "mrkdwn",
-            text: `*${issueLink}*\nby ${author}  |  ${repoName}${labels}`,
+            text: `*${issueLink}*\nby ${author}${labels}`,
           },
         },
         ...(issue.body
@@ -78,7 +78,7 @@ export function formatIssuesEvent(
           type: "section",
           text: {
             type: "mrkdwn",
-            text: `✅ *Issue がクローズされました*\n*${issueLink}*\nby ${closer}  |  ${repoName}`,
+            text: `✅ *Issue がクローズされました*\n*${issueLink}*\nby ${closer}`,
           },
         },
         {
@@ -125,12 +125,12 @@ export function formatIssueCommentEvent(
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `💬 *Issue にコメントが届きました*\n*${issueLink}*\n\n${author} さん、${commenter} さんからコメントがあります  |  ${repoName}`,
+          text: `💬 *Issue にコメントが届きました*\n*${issueLink}*\n\n${author} さん、${commenter} さんからコメントがあります`,
         },
       },
       {
         type: "section",
-        text: { type: "mrkdwn", text: truncate(comment.body, 200) },
+        text: { type: "mrkdwn", text: `> ${truncate(comment.body, 200)}` },
       },
       {
         type: "actions",

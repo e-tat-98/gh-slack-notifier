@@ -3,7 +3,14 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // Slack サービスをモック
 vi.mock("../../../server/services/slack", () => ({
-  postSlackMessage: vi.fn().mockResolvedValue(undefined),
+  postSlackMessage: vi.fn().mockResolvedValue("1234567890.123456"),
+}));
+
+// GitHub サービスをモック
+vi.mock("../../../server/services/github", () => ({
+  extractThreadTs: vi.fn().mockReturnValue(null),
+  appendThreadTs: vi.fn().mockResolvedValue(undefined),
+  verifyWebhookSignature: vi.fn(),
 }));
 
 // config/users をモック
@@ -53,6 +60,7 @@ describe("handleIssuesEvent", () => {
       expect.objectContaining({
         text: expect.stringContaining("クローズ"),
       }),
+      undefined,
     );
   });
 
