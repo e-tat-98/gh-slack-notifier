@@ -1,6 +1,6 @@
 import type { UsersConfig } from "../types/config";
 
-/** GitHub ユーザー名 → Slack ユーザー名のマッピング */
+/** Slackのメンション先のユーザーIDをGitHubのユーザー名にマッピングする設定 **/
 export const usersConfig: UsersConfig = {
-  "e-tat-98": "tatsuki.eguchi",
+  "e-tat-98": "U0B61288ZPV",
 };
