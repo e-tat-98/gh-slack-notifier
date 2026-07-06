@@ -25,11 +25,12 @@ function getClient(): WebClient {
 export async function postSlackMessage(channel: string, message: SlackMessage): Promise<void> {
   const slackClient = getClient();
   try {
-    await slackClient.chat.postMessage({
+    const result = await slackClient.chat.postMessage({
       channel,
       text: message.text,
       blocks: message.blocks,
     });
+    console.log(`Slack message posted successfully: channel=${channel}, ts=${result.ts}`);
   } catch (error) {
     console.error("Failed to post message to Slack:", error);
     throw error;
