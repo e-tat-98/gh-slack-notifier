@@ -29,6 +29,8 @@ export async function postSlackMessage(channel: string, message: SlackMessage): 
       channel,
       text: message.text,
       blocks: message.blocks,
+      unfurl_links: false,
+      unfurl_media: false,
     });
     console.log(`Slack message posted successfully: channel=${channel}, ts=${result.ts}`);
   } catch (error) {

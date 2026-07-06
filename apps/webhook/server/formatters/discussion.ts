@@ -40,7 +40,7 @@ export function formatDiscussionEvent(
           type: "section",
           text: {
             type: "mrkdwn",
-            text: `*${discussionLink}*\nby ${author}  |  ${repoName}`,
+            text: `*${discussionLink}*\nby ${author}`,
           },
         },
         ...(discussion.body
@@ -95,12 +95,12 @@ export function formatDiscussionCommentEvent(
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `💬 *Discussion にコメントが届きました*\n*${discussionLink}*\n\n${author} さん、${commenter} さんからコメントがあります  |  ${repoName}`,
+          text: `💬 *Discussion にコメントが届きました*\n*${discussionLink}*\n\n${author} さん、${commenter} さんからコメントがあります`,
         },
       },
       {
         type: "section",
-        text: { type: "mrkdwn", text: truncate(comment.body, 200) },
+        text: { type: "mrkdwn", text: `> ${truncate(comment.body, 200)}` },
       },
       {
         type: "actions",
