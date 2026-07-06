@@ -1,6 +1,12 @@
-import type { DiscussionCommentCreatedEvent, DiscussionCreatedEvent } from "@octokit/webhooks-types";
+import type {
+  DiscussionCommentCreatedEvent,
+  DiscussionCreatedEvent,
+} from "@octokit/webhooks-types";
 import { describe, expect, it } from "vitest";
-import { formatDiscussionCommentEvent, formatDiscussionEvent } from "../../../server/formatters/discussion";
+import {
+  formatDiscussionCommentEvent,
+  formatDiscussionEvent,
+} from "../../../server/formatters/discussion";
 
 // テスト用ユーザーマッピング
 const USERS_MAP = {

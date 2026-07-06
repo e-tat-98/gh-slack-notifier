@@ -1,4 +1,7 @@
-import type { DiscussionCommentCreatedEvent, DiscussionCreatedEvent } from "@octokit/webhooks-types";
+import type {
+  DiscussionCommentCreatedEvent,
+  DiscussionCreatedEvent,
+} from "@octokit/webhooks-types";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // Slack サービスをモック
@@ -14,7 +17,10 @@ vi.mock("../../../server/config/users", () => ({
   },
 }));
 
-import { handleDiscussionCommentEvent, handleDiscussionEvent } from "../../../server/handlers/discussion";
+import {
+  handleDiscussionCommentEvent,
+  handleDiscussionEvent,
+} from "../../../server/handlers/discussion";
 import { postSlackMessage } from "../../../server/services/slack";
 
 const discussionCreatedPayload = (await import(
