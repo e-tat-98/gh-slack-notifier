@@ -15,7 +15,7 @@ function getApp(): App {
   return app;
 }
 
-const THREAD_TS_REGEX = /slack thread id: (\S+)/;
+const THREAD_TS_REGEX = /slack thread ts: (\S+)/;
 
 /**
  * PR・Issue 本文から Slack スレッド ID を抽出する
@@ -41,7 +41,7 @@ export async function appendThreadTs(
     owner,
     repo,
     issue_number: issueNumber,
-    body: `${currentBody ?? ""}\n\nslack thread id: ${ts}`,
+    body: `${currentBody ?? ""}\n\nslack thread ts: ${ts}`,
   });
 }
 
