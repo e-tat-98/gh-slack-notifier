@@ -31,9 +31,7 @@ describe("verifyWebhookSignature", () => {
   });
 
   it("署名が空文字の場合はエラーをスロー", () => {
-    expect(() => verifyWebhookSignature(BODY, "")).toThrow(
-      "X-Hub-Signature-256 header is missing",
-    );
+    expect(() => verifyWebhookSignature(BODY, "")).toThrow("X-Hub-Signature-256 header is missing");
   });
 
   it("シークレットが異なる場合はエラーをスロー", () => {

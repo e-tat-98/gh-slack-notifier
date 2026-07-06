@@ -1,7 +1,9 @@
 name: Deploy
 
 on:
-  push:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
     branches: [main]
 
 permissions:
@@ -10,35 +12,39 @@ permissions:
 
 jobs:
   deploy:
-    name: AWS へデプロイ
+    name: AWS CDK Deploy
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
+      # 1. ソースコードのチェックアウト
+      - name: Checkout code
       - uses: actions/checkout@v4
 
-      - name: pnpm のセットアップ
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-
-      - name: Node.js のセットアップ
+      # 2. Node.js のセットアップ
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "pnpm"
+          node-version: '24'
+          cache: 'npm'
 
-      - name: 依存パッケージのインストール
-        run: pnpm install --frozen-lockfile
+      # 3. 依存関係のインストール
+      - name: Install dependencies
+        run: npm ci
 
+      # 4. サーバーのビルド
       - name: Nitro ビルド
         run: pnpm build
 
-      - name: AWS 認証 (OIDC)
+      # 5. AWS 認証情報の取得 (OIDC)
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ap-northeast-1
 
-      - name: CDK デプロイ
+      # 5. CDK Deploy の実行
+      - name: CDK Deploy
         working-directory: apps/cdk
-        run: pnpm deploy --require-approval never
+        run: |
+          npx cdk deploy --require-approval never
