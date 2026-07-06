@@ -8,7 +8,7 @@ import { postSlackMessage } from "../services/slack";
  * issues イベントを処理する
  */
 export async function handleIssuesEvent(payload: IssuesEvent, slackChannel: string): Promise<void> {
-  const { action, issue, repository, installation } = payload;
+  const { action, issue, repository } = payload;
   const message = formatIssuesEvent(payload, usersConfig);
   if (!message) {
     console.log(`issues[${action}]: Skipping non-target action.`);
@@ -17,14 +17,16 @@ export async function handleIssuesEvent(payload: IssuesEvent, slackChannel: stri
 
   if (action === "opened") {
     const ts = await postSlackMessage(slackChannel, message);
-    if (installation?.id) {
-      const [owner, repo] = repository.full_name.split("/");
-      await appendThreadTs(installation.id, owner, repo, issue.number, issue.body, ts).catch((e) =>
-        console.error("Failed to append thread_ts to issue body:", e),
-      );
-    }
+    const [owner, repo] = repository.full_name.split("/");
+    console.log(
+      `Appending thread_ts to issue #${issue.number}: owner=${owner}, repo=${repo}, ts=${ts}`,
+    );
+    await appendThreadTs(owner, repo, issue.number, issue.body, ts).catch((e) =>
+      console.error("Failed to append thread_ts to issue body:", e),
+    );
   } else {
     const threadTs = extractThreadTs(issue.body) ?? undefined;
+    console.log(`Extracted thread_ts from issue #${issue.number} body: ${threadTs ?? "not found"}`);
     await postSlackMessage(slackChannel, message, threadTs);
   }
 }
