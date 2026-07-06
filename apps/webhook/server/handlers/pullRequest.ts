@@ -32,7 +32,9 @@ export async function handlePullRequestEvent(
       console.warn("installation.id is missing in PR payload, skipping thread_ts append.");
     } else {
       const [owner, repo] = repository.full_name.split("/");
-      console.log(`Appending thread_ts to PR #${pr.number}: owner=${owner}, repo=${repo}, ts=${ts}`);
+      console.log(
+        `Appending thread_ts to PR #${pr.number}: owner=${owner}, repo=${repo}, ts=${ts}`,
+      );
       await appendThreadTs(installation.id, owner, repo, pr.number, pr.body, ts).catch((e) =>
         console.error("Failed to append thread_ts to PR body:", e),
       );
