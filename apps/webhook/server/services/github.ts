@@ -43,6 +43,7 @@ export async function appendThreadTs(
     issue_number: issueNumber,
     body: `${currentBody ?? ""}\n\nslack thread ts: ${ts}`,
   });
+  console.log(`Successfully appended thread_ts to issue/PR #${issueNumber}: ts=${ts}`);
 }
 
 /**

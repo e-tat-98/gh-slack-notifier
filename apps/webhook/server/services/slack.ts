@@ -21,12 +21,6 @@ function getClient(): WebClient {
  *
  * @param channel Slack チャンネル ID (C...)
  * @param message 投稿するメッセージ
- */
-/**
- * Slack チャンネルにメッセージを投稿する
- *
- * @param channel Slack チャンネル ID (C...)
- * @param message 投稿するメッセージ
  * @param threadTs スレッドに返信する場合は親メッセージの ts
  * @returns 投稿したメッセージの ts
  */

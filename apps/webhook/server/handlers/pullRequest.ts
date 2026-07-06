@@ -28,21 +28,26 @@ export async function handlePullRequestEvent(
 
   if (action === "opened") {
     const ts = await postSlackMessage(slackChannel, message);
-    if (installation?.id) {
+    if (!installation?.id) {
+      console.warn("installation.id is missing in PR payload, skipping thread_ts append.");
+    } else {
       const [owner, repo] = repository.full_name.split("/");
+      console.log(
+        `Appending thread_ts to PR #${pr.number}: owner=${owner}, repo=${repo}, ts=${ts}`,
+      );
       await appendThreadTs(installation.id, owner, repo, pr.number, pr.body, ts).catch((e) =>
         console.error("Failed to append thread_ts to PR body:", e),
       );
     }
   } else {
     const threadTs = extractThreadTs(pr.body) ?? undefined;
+    console.log(`Extracted thread_ts from PR #${pr.number} body: ${threadTs ?? "not found"}`);
     await postSlackMessage(slackChannel, message, threadTs);
   }
 }
 
 /**
  * pull_request_review イベントを処理する
- * approved のみ通知する
  */
 export async function handlePullRequestReviewEvent(
   payload: PullRequestReviewEvent,
@@ -57,6 +62,7 @@ export async function handlePullRequestReviewEvent(
     return;
   }
   const threadTs = extractThreadTs(pr.body) ?? undefined;
+  console.log(`Extracted thread_ts from PR #${pr.number} body: ${threadTs ?? "not found"}`);
   await postSlackMessage(slackChannel, message, threadTs);
 }
 
@@ -74,5 +80,6 @@ export async function handlePullRequestReviewCommentEvent(
     return;
   }
   const threadTs = extractThreadTs(pr.body) ?? undefined;
+  console.log(`Extracted thread_ts from PR #${pr.number} body: ${threadTs ?? "not found"}`);
   await postSlackMessage(slackChannel, message, threadTs);
 }
