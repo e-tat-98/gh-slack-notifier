@@ -53,7 +53,7 @@ export class GhSlackNotifierStack extends cdk.Stack {
     // -----------------------------------------------------------
 
     const webhookFn = new lambda.Function(this, "WebhookHandler", {
-      runtime: lambda.Runtime.NODEJS_20_X,
+      runtime: lambda.Runtime.NODEJS_22_X,
       handler: "index.handler",
       code: lambda.Code.fromAsset(join(import.meta.dirname, "../../webhook/.output/server")),
       timeout: cdk.Duration.seconds(30),
