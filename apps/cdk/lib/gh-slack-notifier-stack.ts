@@ -14,10 +14,11 @@ export class GhSlackNotifierStack extends cdk.Stack {
     // -----------------------------------------------------------
     // SSM Parameter Store
     // 機密値は SecureString (KMS暗号化)、非機密値は String で管理
-    // デプロイ後に AWS Console または CLI で値を設定する
+    // 値は手動で設定する必要があるが、SecureString への型変換自体は
+    // `pnpm deploy` 実行時に scripts/enforce-securestring.sh が毎回自動で保証する
+    // (CloudFormation の AWS::SSM::Parameter は SecureString を直接作成できないため)
     // -----------------------------------------------------------
 
-    // SecureString は CDK では直接作成できないため、デプロイ後に手動で上書きする
     const slackBotTokenParam = new ssm.StringParameter(this, "SlackBotToken", {
       parameterName: "/gh-slack-notifier/slack-bot-token",
       stringValue: "placeholder",
@@ -25,7 +26,6 @@ export class GhSlackNotifierStack extends cdk.Stack {
       tier: ssm.ParameterTier.STANDARD,
     });
 
-    // SecureString は CDK では直接作成できないため、デプロイ後に手動で上書きする
     const githubWebhookSecretParam = new ssm.StringParameter(this, "GitHubWebhookSecret", {
       parameterName: "/gh-slack-notifier/github-webhook-secret",
       stringValue: "placeholder",
@@ -33,7 +33,6 @@ export class GhSlackNotifierStack extends cdk.Stack {
       tier: ssm.ParameterTier.STANDARD,
     });
 
-    // SecureString は CDK では直接作成できないため、デプロイ後に手動で上書きする
     const githubAppPrivateKeyParam = new ssm.StringParameter(this, "GitHubAppPrivateKey", {
       parameterName: "/gh-slack-notifier/github-app-private-key",
       stringValue: "placeholder",
