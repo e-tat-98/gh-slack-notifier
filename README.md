@@ -116,7 +116,7 @@ pnpm dev
 pnpm build
 pnpm --filter @gh-slack-notifier/cdk deploy
 ```
-初回デプロイ時は事前に `pnpm --filter @gh-slack-notifier/cdk exec cdk bootstrap` が必要。デプロイすると SSM Parameter Store に以下のパラメータが `placeholder` 値で作成されるので、AWS Console もしくは CLI で実際の値に上書きする（[`apps/cdk/lib/gh-slack-notifier-stack.ts`](apps/cdk/lib/gh-slack-notifier-stack.ts) 参照）。
+初回デプロイ時は事前に `pnpm --filter @gh-slack-notifier/cdk exec cdk bootstrap` が必要。デプロイすると SSM Parameter Store に以下のパラメータが `placeholder` 値で作成されるので、AWS CLI で実際の値に上書きする（[`apps/cdk/lib/gh-slack-notifier-stack.ts`](apps/cdk/lib/gh-slack-notifier-stack.ts) 参照）。
 
 | パラメータ名 | 値 |
 | --- | --- |
@@ -124,6 +124,14 @@ pnpm --filter @gh-slack-notifier/cdk deploy
 | `/gh-slack-notifier/github-webhook-secret` | `GITHUB_WEBHOOK_SECRET` |
 | `/gh-slack-notifier/github-app-private-key` | `GITHUB_APP_PRIVATE_KEY` |
 | `/gh-slack-notifier/github-app-id` | `GITHUB_APP_ID`（機密ではないため String パラメータ） |
+
+機密の3パラメータ（`slack-bot-token` / `github-webhook-secret` / `github-app-private-key`）は CloudFormation の制約上 CDK からは `String` 型でしか作成できないが、`pnpm deploy`（= `cdk deploy` 実行後）のたびに [`apps/cdk/scripts/enforce-securestring.sh`](apps/cdk/scripts/enforce-securestring.sh) が自動実行され、既存の値を保ったまま `SecureString` 型に矯正する。値を上書きする際は型を気にせず
+
+```bash
+aws ssm put-parameter --name /gh-slack-notifier/slack-bot-token --value "<実際の値>" --overwrite --type String
+```
+
+のように `String` で上書きしても構わない（次回デプロイ時に自動で `SecureString` に直る）。`github-app-id` のみ非機密のため常に `String` 型のままでよい。
 
 デプロイ完了後、CDK の Output に表示される `WebhookUrl`（`https://<APIドメイン>/webhook`）を控え、手順 3-1 の GitHub App の Webhook URL を `<WebhookUrl>?repo=<repos.tsで設定したキー>` に更新する。
 
