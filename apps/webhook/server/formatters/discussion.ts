@@ -100,7 +100,7 @@ export function formatDiscussionCommentEvent(
       },
       {
         type: "section",
-        text: { type: "mrkdwn", text: `> ${truncate(comment.body, 200)}` },
+        text: { type: "mrkdwn", text: `>>> ${truncate(comment.body, 200)}` },
       },
       {
         type: "actions",
