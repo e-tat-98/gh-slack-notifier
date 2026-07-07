@@ -207,7 +207,7 @@ export function formatPullRequestReviewEvent(
           ? [
               {
                 type: "context" as const,
-                elements: [{ type: "mrkdwn" as const, text: `> ${truncate(review.body, 100)}` }],
+                elements: [{ type: "mrkdwn" as const, text: `>>> ${truncate(review.body, 100)}` }],
               },
             ]
           : []),
@@ -241,7 +241,7 @@ export function formatPullRequestReviewEvent(
           ? [
               {
                 type: "context" as const,
-                elements: [{ type: "mrkdwn" as const, text: `> ${truncate(review.body, 100)}` }],
+                elements: [{ type: "mrkdwn" as const, text: `>>> ${truncate(review.body, 100)}` }],
               },
             ]
           : []),
@@ -273,7 +273,7 @@ export function formatPullRequestReviewEvent(
         },
         {
           type: "context",
-          elements: [{ type: "mrkdwn" as const, text: `> ${truncate(review.body, 100)}` }],
+          elements: [{ type: "mrkdwn" as const, text: `>>> ${truncate(review.body, 100)}` }],
         },
         {
           type: "actions",
